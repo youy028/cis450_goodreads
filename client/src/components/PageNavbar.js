@@ -11,7 +11,7 @@ export default class PageNavbar extends React.Component {
 	};
 
 	componentDidMount() {
-		const pageList = ['dashboard', 'recommendations', 'bestmovies', 'search', 'explore', 'quotes'];
+		const pageList = ['explore', 'recommendations', 'search', 'quotes'];
 
 		let navbarDivs = pageList.map((page, i) => {
 			if (this.props.active === page) {
@@ -31,7 +31,7 @@ export default class PageNavbar extends React.Component {
 		return (
 			<div className="PageNavbar">
 				<nav className="navbar navbar-expand-lg navbar-light bg-light">
-						<img src="./logo.png"  width="40" height="40" class="d-inline-block align-top" alt=""/>
+						<img src="./logo.png"  width="40" height="40" className="d-inline-block align-top" alt=""/>
 						<span className="navbar-brand">Goodreads</span>
 			      <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
 			        <div className="navbar-nav">

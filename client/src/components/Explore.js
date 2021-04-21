@@ -1,7 +1,6 @@
 import React from 'react';
 import MostPopularBooks from './Explore_components/MostPopularBooks';
 import PageNavbar from './PageNavbar';
-import '../style/BestMovies.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default class Explore extends React.Component {
@@ -31,12 +30,12 @@ export default class Explore extends React.Component {
 		return (
 			<div className="Explore">
 				<PageNavbar active="explore" />
-				<div class="container">
-					<div class="row align-items-start">
-						<div class="col">
+				<div className="container">
+					<div className="row align-items-start">
+						<div className="col">
 							<MostPopularBooks/>
 						</div>
-						<div class="col">
+						<div className="col">
 							<MostPopularBooks/>
 						</div>
 					</div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import PageNavbar from './PageNavbar';
-import BestMoviesRow from './BestMoviesRow';
 import '../style/BestMovies.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -44,13 +43,12 @@ export default class Search extends React.Component {
 		return (
 			<div className="Search">
 				<PageNavbar active="search" />
-
-				<div class="p-3">
-					<div class="container">
-						<div class="input-group mb-3">
-							<input type="text" class="form-control" placeholder="Enter book name"/>
-							<div class="input-group-append">
-								<span class="btn btn-secondary" href="/search/hello">submit</span>
+				<div className="p-3">
+					<div className="container">
+						<div className="input-group mb-3">
+							<input type="text" className="form-control" placeholder="Enter book name"/>
+							<div className="input-group-append">
+								<span className="btn btn-secondary" href="/search/hello">submit</span>
 							</div>
 						</div>
 					</div>

@@ -87,7 +87,7 @@ export default class Recommendations extends React.Component {
 			<div className="Recommendations">
 				<PageNavbar active="recommendations"/>
 					<br/>
-					<div class="container">
+					<div className="container">
 						<Jumbotron>
 							<Tabs defaultActiveKey={1} id="uncontrolled-tab-example" onSelect={(key,event)=>this.setState({activeTab: parseInt(key)})}>
 								<Tab eventKey={1} title="By Book">
@@ -109,9 +109,9 @@ export default class Recommendations extends React.Component {
 										submitFunc={this.submitSearchByCountry}/>
 								</Tab>
 								<Tab eventKey={4} title="By Genre">
-									<div class="container">
-										<div class="row">
-											<div class="col text-center">
+									<div className="container">
+										<div className="row">
+											<div className="col text-center">
 												<GenresDropdown handleChange={this.handleGenreChange}/>
 											</div>
 										</div>
@@ -121,11 +121,11 @@ export default class Recommendations extends React.Component {
 						</Jumbotron>
 					</div>
 
-				<div class="container">
+				<div className="container">
 					<Jumbotron>
 						<div className="row justify-content-center">
 							{(this.state.bookQueryRes)
-								.map((item, i)=><div class="col-auto mb-3"><BookEntry imgPath={item[0]} name={item[1]} author={item[2]}/></div>)}
+								.map((item, i)=><div className="col-auto mb-3"><BookEntry imgPath={item[0]} name={item[1]} author={item[2]}/></div>)}
 						</div>
 					</Jumbotron>
 				</div>

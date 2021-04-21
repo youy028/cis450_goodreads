@@ -21,8 +21,8 @@ export default class SearchBar extends React.Component {
 
 	render() {
 		return (
-			<div class="p-3">
-				<div class="container">
+			<div className="p-3">
+				<div className="container">
 					<InputGroup className="mb-3">
 						<FormControl placeholder={this.props.placeholder} onChange={this.props.handleChange}/>
 						<InputGroup.Append>

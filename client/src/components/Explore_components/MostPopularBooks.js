@@ -15,9 +15,8 @@ export default class MostPopularBooks extends React.Component {
 
 	componentDidMount() {
 		const books = ["harry potter", "gone in the wind"];
-
 		let popularBooksTest = books.map((book, i) => {
-			return <p className="PopularBookRow"> {book} </p>
+			return <p className="PopularBookRow" key={i}> {book} </p>
 		});
 
 		this.setState({
@@ -29,10 +28,10 @@ export default class MostPopularBooks extends React.Component {
 	render() {
 		return (
 			<div className="PopularBooks">
-				<div class="p-3">
-					<div class="jumbotron">
-						<div class="container-fluid">
-							<h1 class="display-5">Most Popular</h1>
+				<div className="p-3">
+					<div className="jumbotron">
+						<div className="container-fluid">
+							<h1 className="display-5">Most Popular</h1>
 							{this.state.popularBooks}
 						</div>
 					</div>

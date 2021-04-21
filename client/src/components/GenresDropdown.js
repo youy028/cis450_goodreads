@@ -44,13 +44,13 @@ export default class GenresDropdown extends React.Component {
 
 	render() {
 		return (
-			<div class="p-3">
+			<div className="p-3">
 				<Dropdown>
 					<Dropdown.Toggle variant="secondary" id="dropdown-basic">
 						{this.state.selected.length<=0 ? "select genre" : this.state.selected}
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
-						{this.state.genres.map((g,i)=><Dropdown.Item eventKey={g} onSelect={this.handleSelect}>{g}</Dropdown.Item>)}
+						{this.state.genres.map((g,i)=><Dropdown.Item eventKey={g} key={i.toString()} onSelect={this.handleSelect}>{g}</Dropdown.Item>)}
 					</Dropdown.Menu>
 				</Dropdown>
 			</div>

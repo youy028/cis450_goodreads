@@ -1,6 +1,5 @@
 import React from 'react';
 import PageNavbar from './PageNavbar';
-import BestMoviesRow from './BestMoviesRow';
 import '../style/BestMovies.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -68,21 +67,20 @@ export default class Quotes extends React.Component {
 	render() {
 		return (
 			<div className="Search">
-				<PageNavbar active="search" />
+				<PageNavbar active="quotes" />
 
-				<div class="p-3">
-					<div class="container">
-						<div class="input-group mb-3">
-							<input type="text" class="form-control" placeholder="Enter book name"/>
-							<div class="input-group-append">
-								<span class="btn btn-secondary">Search by Tag</span>
-								<span class="btn btn-secondary">Search by Content</span>
-								<span class="btn btn-secondary">Popular quotes under genre</span>
+				<div className="p-3">
+					<div className="container">
+						<div className="input-group mb-3">
+							<input type="text" className="form-control" placeholder="Enter book name"/>
+							<div className="input-group-append">
+								<span className="btn btn-secondary">Search by Tag</span>
+								<span className="btn btn-secondary">Search by Content</span>
+								<span className="btn btn-secondary">Popular quotes under genre</span>
 							</div>
 						</div>
 					</div>
 				</div>
-
 			</div>
 		);
 	};
