@@ -54,13 +54,13 @@ const getBookInfoOnId = (req, res) => {
 const getByBookBookName = (req, res) => {
   var inputBookName = req.params.bookname;
   const query = `
-  WITH
+  WITH 
   getBookID AS (
-    SELECT bhg.book_id, bhg.genre_id
+    SELECT bhg.book_id, bhg.genre_id, b.title
     FROM books b JOIN book_has_genre bhg ON b.id = bhg.book_id
-    WHERE title like "%${inputBookName}%"
+    WHERE title = "${inputBookName}"
+    GROUP BY b.title
     ORDER BY b.rating_num DESC, b.review_num DESC
-    LIMIT 1
     ),
   bookGenreCount AS (
     SELECT bhg.book_id, count(*) AS num
@@ -78,7 +78,7 @@ const getByBookBookName = (req, res) => {
     FROM getAllInfo gai JOIN book_author ba ON gai.bookid = ba.book_id)
   SELECT ga.bookid, ga.coverUrl, ga.bookname, GROUP_CONCAT(a.author_name) AS author
   FROM getAuthorId ga JOIN authors a ON ga.author_id = a.author_id
-  GROUP BY ga.bookid
+  GROUP BY ga.bookname
   `
   connection.query(query, (err, rows, fields) => {
     if (err) console.log(err);
