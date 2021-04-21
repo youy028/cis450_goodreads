@@ -25,37 +25,41 @@ export default class Recommendations extends React.Component {
 		this.onClickTest = this.onClickTest.bind(this);
 		this.dropdownBut = this.dropdownBut.bind(this);
 	};
-	//
+	///getallGenres
+	//onClick={() => this.showMovies(genreObj.kwd_name)}
 
 	componentDidMount() {
-		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/getallGenres",
-		{
-			method: 'GET' // The type of HTTP request.
-		}).then(res => {
-			// Convert the response data to a JSON.
-			return res.json();
-		}, err => {
-			// Print the error if there is one.
-			console.log(err);
-		}).then(genreList => {
-			if (!genreList) return;
+    // Send an HTTP request to the server.
+    fetch("http://localhost:8081/getallGenres",
+    {
+      method: 'GET' // The type of HTTP request.
+    }).then(res => {
+      // Convert the response data to a JSON.
+      return res.json();
+    }, err => {
+      // Print the error if there is one.
+      console.log(err);
+    }).then(genreList => {
+      if (!genreList) return;
 
-			const genresDivs = genreList.map((genreObj, i) =>
-				<Dropdown.Item>{genreObj.genre}</Dropdown.Item>
-			);
+      const genresDivs = keywordsList.map((genreObj, i) =>
+        <Dropdown.Item>{genreObj.genre}</Dropdown.Item>
+      );
 
-			this.setState({
-				genres: genresDivs
-			});
-		}, err => {
-			console.log(err);
-		});
-	};
+      this.setState({
+        genres: genresDivs
+      });
+    }, err => {
+      console.log(err);
+    });
+  };
+
 
 	onClickTest() {
 		console.log("hii");
 	}
+
+
 
 	searchBar(message) {
 		return (

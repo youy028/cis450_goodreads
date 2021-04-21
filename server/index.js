@@ -29,7 +29,7 @@ app.get('/recommend/:title', routes.getRecs);
 
 /* ---- (Best Movies) ---- */
 app.get('/decades', routes.getDecades);
-app.get('/genres', routes.getGenres);
+app.get('/getallGenres', routes.getallGenres);
 
 
 /* ---- Q3b (Best Movies) ---- */

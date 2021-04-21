@@ -11,7 +11,7 @@ const connection = mysql.createPool(config);
 
 const getallGenres = (req, res) => {
   const query = `
-    SELECT genre_name
+    SELECT genre_name as genre
     FROM genres
     LIMIT 20
   `
@@ -153,7 +153,6 @@ module.exports = {
 	getTopMoviesWithKeyword: getTopMoviesWithKeyword,
 	getRecs: getRecs,
   getDecades: getDecades,
-  getGenres: getGenres,
-  bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre
+  bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre,
   getallGenres: getallGenres
 };
