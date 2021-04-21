@@ -1,8 +1,8 @@
 // Private. Will not be included in submission
 module.exports = {
-  host: "localhost",
+  host: "cis550-group28-database.cosgxx3sw5lr.us-east-1.rds.amazonaws.com",
   port: "3306",
-  user: "root",
-  password: "biggod4KEN",
-  database: "cis550_database"
+  user: "estee",
+  password: "cis550-group28-database",
+  database: "goodreads"
 };
