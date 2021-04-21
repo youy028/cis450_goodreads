@@ -9,6 +9,18 @@ const connection = mysql.createPool(config);
 /* -------------------------------------------------- */
 
 
+const getallGenres = (req, res) => {
+  const query = `
+    SELECT genre_name
+    FROM genres
+    LIMIT 20
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+}
+
 /* ---- Q1a (Dashboard) ---- */
 // Equivalent to: function getTop20Keywords(req, res) {}
 const getTop20Keywords = (req, res) => {
@@ -143,4 +155,5 @@ module.exports = {
   getDecades: getDecades,
   getGenres: getGenres,
   bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre
+  getallGenres: getallGenres
 };
