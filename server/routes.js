@@ -9,17 +9,127 @@ const connection = mysql.createPool(config);
 /* -------------------------------------------------- */
 
 
+/* ---- /getallGenres ---- */
 const getallGenres = (req, res) => {
   const query = `
-    SELECT genre_name as genre
-    FROM genres
-    LIMIT 20
+  WITH 
+  countGenre AS (
+      SELECT genre_id, count(*) AS c
+      FROM book_has_genre
+      GROUP BY genre_id
+  )
+  SELECT genre_name as genre
+  FROM genres g JOIN countGenre cg ON g.genre_id = cg.genre_id
+  ORDER BY cg.c DESC
+  LIMIT 20;
   `
   connection.query(query, (err, rows, fields) => {
     if (err) console.log(err);
     else res.json(rows);
   });
 }
+
+/* ---- /book/:id ---- */
+const getBookInfoOnId = (req, res) => {
+  var inputId = req.params.id;
+  const query = `
+  WITH 
+  findAuthor AS (
+    SELECT ba.book_id, a.author_name
+    FROM book_author ba JOIN authors a ON ba.author_id = a.author_id
+    WHERE ba.book_id = "${inputId}"
+  )
+  SELECT b.id AS bookid, b.image_url AS coverUrl, b.title AS bookname, GROUP_CONCAT(fa.author_name) AS author, b.rating, b.description
+  FROM books b JOIN findAuthor fa ON fa.book_id = b.id
+  WHERE id = "${inputId}"
+  `;
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+}
+
+
+/* ---- /recommendations/bybook/:bookname ---- */
+const getByBookBookName = (req, res) => {
+  var inputBookName = req.params.bookname;
+  const query = `
+  WITH 
+  getBookID AS (
+    SELECT bhg.book_id, bhg.genre_id
+    FROM books b JOIN book_has_genre bhg ON b.id = bhg.book_id
+    WHERE title like "%${inputBookName}%"
+    ORDER BY b.rating_num DESC, b.review_num DESC
+    LIMIT 1
+    ),
+  bookGenreCount AS (
+    SELECT bhg.book_id, count(*) AS num
+    FROM book_has_genre bhg
+    INNER JOIN getBookID gbi ON bhg.genre_id = gbi.genre_id
+    WHERE gbi.book_id <> bhg.book_id
+    GROUP BY book_id),
+  getAllInfo AS (
+    SELECT DISTINCT b.id AS bookid, b.image_url AS coverUrl,    b.title AS bookname, b.rating
+    FROM bookGenreCount bgc JOIN books b ON bgc.book_id = b.id
+    ORDER BY bgc.num DESC, b.rating DESC, b.rating_num DESC
+    LIMIT 20),
+  getAuthorId AS (
+    SELECT gai.bookid, gai.coverUrl, gai.bookname, ba.author_id
+    FROM getAllInfo gai JOIN book_author ba ON gai.bookid = ba.book_id)
+  SELECT ga.bookid, ga.coverUrl, ga.bookname, GROUP_CONCAT(a.author_name) AS author
+  FROM getAuthorId ga JOIN authors a ON ga.author_id = a.author_id
+  GROUP BY ga.bookid
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+}
+
+/* ---- /quotes/bytags/:tags ---- */
+const getQuotesByTags = (req, res) => {
+  var inputTag = req.params.tags;
+  const query = `
+  SELECT content, author, book AS bookname
+  FROM quotes
+  WHERE tags like "%${inputTag}%"
+  LIMIT 10
+  `;
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+
+
+  /* ---- /quotes/bygenre/:genre ---- */
+  const getQuotesByGenre = (req, res) => {
+    var inputGenre = req.params.genre;
+    const query = `
+    WITH 
+    findGenreId AS (
+    SELECT genre_id
+    FROM genres
+    WHERE genre_name like "%${inputGenre}%"
+    ),
+    bookids AS (
+    SELECT book_id AS id
+    FROM book_has_genre bhg JOIN findGenreId fgi ON bhg.genre_id = fgi.genre_id
+    ),
+    tempbooks AS (
+    SELECT title AS book
+    FROM books NATURAL JOIN bookids
+    )
+    SELECT DISTINCT content, author, book AS bookname
+    FROM quotes NATURAL JOIN tempbooks
+    ORDER BY num_like DESC
+    LIMIT 10
+    `;
+    connection.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+
+
 
 /* ---- Q1a (Dashboard) ---- */
 // Equivalent to: function getTop20Keywords(req, res) {}
@@ -149,10 +259,14 @@ const bestMoviesPerDecadeGenre = (req, res) => {
 };
 
 module.exports = {
-	getTop20Keywords: getTop20Keywords,
-	getTopMoviesWithKeyword: getTopMoviesWithKeyword,
-	getRecs: getRecs,
-  getDecades: getDecades,
-  bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre,
+	//getTop20Keywords: getTop20Keywords,
+	//getTopMoviesWithKeyword: getTopMoviesWithKeyword,
+	//getRecs: getRecs,
+  //getDecades: getDecades,
+  //bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre,
   getallGenres: getallGenres
+  getBookInfoOnId: getBookInfoOnId
+  getByBookBookName: getByBookBookName
+  getQuotesByTags: getQuotesByTags
+  getQuotesByGenre: getQuotesByGenre
 };
