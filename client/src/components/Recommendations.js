@@ -2,10 +2,10 @@ import React from 'react';
 import {Tabs} from 'react-bootstrap'
 import {Tab} from 'react-bootstrap'
 import Jumbotron from 'react-bootstrap/Jumbotron'
-import Dropdown from 'react-bootstrap/Dropdown'
 import CardDeck from 'react-bootstrap/CardDeck'
 import PageNavbar from './PageNavbar';
-import RecommendationsRow from './RecommendationsRow';
+import GenresDropdown from './GenresDropdown';
+import SearchBar from './SearchBar';
 import '../style/Recommendations.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -16,77 +16,58 @@ export default class Recommendations extends React.Component {
 	constructor(props) {
 		super(props);
 
-		// State maintained by this React component is the selected movie name, and the list of recommended movies.
 		this.state = {
-			genres: []
+			activeTab: 1,
+			authorQueryStr: "",
+			countryQueryStr: "",
+			genreQueryStr: "",
+			authorQueryRes: [["https://images-na.ssl-images-amazon.com/images/I/41XMaCHkrgL._SX326_BO1,204,203,200_.jpg", "gatsby"], ["book1.jpg", "mockingbird"]],
+			countryQueryRes: [],
+			genreQueryRes: []
 		};
 
-		this.searchBar = this.searchBar.bind(this);
-		this.onClickTest = this.onClickTest.bind(this);
-		this.dropdownBut = this.dropdownBut.bind(this);
-	};
-	//
-
-	componentDidMount() {
-		// Send an HTTP request to the server.
-		fetch("http://localhost:8081/getallGenres",
-		{
-			method: 'GET' // The type of HTTP request.
-		}).then(res => {
-			// Convert the response data to a JSON.
-			return res.json();
-		}, err => {
-			// Print the error if there is one.
-			console.log(err);
-		}).then(genreList => {
-			if (!genreList) return;
-
-			const genresDivs = genreList.map((genreObj, i) =>
-				<Dropdown.Item>{genreObj.genre}</Dropdown.Item>
-			);
-
-			this.setState({
-				genres: genresDivs
-			});
-		}, err => {
-			console.log(err);
-		});
+		this.handleAuthorChange = this.handleAuthorChange.bind(this);
+		this.handleCountryChange = this.handleCountryChange.bind(this);
+		this.handleGenreChange = this.handleGenreChange.bind(this);
+		this.submitSearchByAuthor = this.submitSearchByAuthor.bind(this);
+		this.submitSearchByCountry = this.submitSearchByCountry.bind(this);
 	};
 
-	onClickTest() {
-		console.log("hii");
+
+	handleAuthorChange(e) {
+		this.setState({authorQueryStr: e.target.value});
 	}
 
-	searchBar(message) {
-		return (
-			<div class="p-3">
-				<div class="container">
-					<div class="input-group mb-3">
-						<input type="text" class="form-control" placeholder="Enter book name"/>
-						<div class="input-group-append">
-							<span class="btn btn-secondary" onClick={this.onClickTest}>submit</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		);
+	handleCountryChange(e) {
+		this.setState({countryQueryStr: e.target.value});
 	}
 
-	dropdownBut() {
-		return (
-			<div class="p-3">
-				<Dropdown>
-					<Dropdown.Toggle variant="secondary" id="dropdown-basic">
-						Select genre
-					</Dropdown.Toggle>
-
-					<Dropdown.Menu>
-						{this.state.genres}
-					</Dropdown.Menu>
-				</Dropdown>
-			</div>
-		);
+	handleGenreChange(genre) {
+		this.setState({genreQueryStr: genre});
 	}
+
+	submitSearchByAuthor() {
+
+	}
+
+	submitSearchByCountry() {
+
+	}
+
+	// <div class="col-auto mb-3">
+	// 	<BookEntry imgPath="https://images-na.ssl-images-amazon.com/images/I/41XMaCHkrgL._SX326_BO1,204,203,200_.jpg" name="testname" />
+	// </div>
+	// <div class="col-auto mb-3">
+	// 	<BookEntry imgPath="book1.jpg" name="testname" />
+	// </div>
+	// <div class="col-auto mb-3">
+	// 	<BookEntry imgPath="book1.jpg" name="testname" />
+	// </div>
+	// <div class="col-auto mb-3">
+	// 	<BookEntry imgPath="book1.jpg" name="testname" />
+	// </div>
+
+
 
 	render() {
 		return (
@@ -95,15 +76,24 @@ export default class Recommendations extends React.Component {
 					<br/>
 					<div class="container">
 						<Jumbotron>
-							<Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-						    <Tab eventKey={1} title="By book">{this.searchBar()}</Tab>
-								<Tab eventKey={2} title="By author">{this.searchBar()}</Tab>
-								<Tab eventKey={3} title="By country">{this.searchBar()}</Tab>
-								<Tab eventKey={4} title="By genre">
+							<Tabs defaultActiveKey={1} id="uncontrolled-tab-example" onSelect={(key,event)=>this.setState({activeTab: parseInt(key)})}>
+						    <Tab eventKey={1} title="By Author">
+									<SearchBar id="byAuthorBar"
+										placeholder="Enter Author"
+										handleChange={this.handleAuthorChange}
+										submitFunc={this.submitSearchByAuthor}/>
+								</Tab>
+								<Tab eventKey={2} title="By Country">
+									<SearchBar id="byCountryBar"
+										placeholder="Enter Country"
+										handleChange={this.handleCountryChange}
+										submitFunc={this.submitSearchByCountry}/>
+								</Tab>
+								<Tab eventKey={3} title="By Genre">
 									<div class="container">
 										<div class="row">
 											<div class="col text-center">
-												{this.dropdownBut()}
+												<GenresDropdown handleChange={this.handleGenreChange}/>
 											</div>
 										</div>
 									</div>
@@ -115,18 +105,8 @@ export default class Recommendations extends React.Component {
 				<div class="container">
 					<Jumbotron>
 						<div className="row justify-content-center">
-							<div class="col-auto mb-3">
-								<BookEntry imgPath="book1.jpg" name="testname" />
-							</div>
-							<div class="col-auto mb-3">
-								<BookEntry imgPath="book1.jpg" name="testname" />
-							</div>
-							<div class="col-auto mb-3">
-								<BookEntry imgPath="book1.jpg" name="testname" />
-							</div>
-							<div class="col-auto mb-3">
-								<BookEntry imgPath="book1.jpg" name="testname" />
-							</div>
+							{((this.state.activeTab===1) ? this.state.authorQueryRes : this.state.countryQueryRes)
+								.map((item, i)=><div class="col-auto mb-3"><BookEntry imgPath={item[0]} name={item[1]}/></div>)}
 						</div>
 					</Jumbotron>
 				</div>
