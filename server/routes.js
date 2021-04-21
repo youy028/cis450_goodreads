@@ -12,7 +12,7 @@ const connection = mysql.createPool(config);
 /* ---- /getallGenres ---- */
 const getallGenres = (req, res) => {
   const query = `
-  WITH 
+  WITH
   countGenre AS (
       SELECT genre_id, count(*) AS c
       FROM book_has_genre
@@ -27,13 +27,13 @@ const getallGenres = (req, res) => {
     if (err) console.log(err);
     else res.json(rows);
   });
-}
+};
 
 /* ---- /book/:id ---- */
 const getBookInfoOnId = (req, res) => {
   var inputId = req.params.id;
   const query = `
-  WITH 
+  WITH
   findAuthor AS (
     SELECT ba.book_id, a.author_name
     FROM book_author ba JOIN authors a ON ba.author_id = a.author_id
@@ -47,14 +47,14 @@ const getBookInfoOnId = (req, res) => {
     if (err) console.log(err);
     else res.json(rows);
   });
-}
+};
 
 
 /* ---- /recommendations/bybook/:bookname ---- */
 const getByBookBookName = (req, res) => {
   var inputBookName = req.params.bookname;
   const query = `
-  WITH 
+  WITH
   getBookID AS (
     SELECT bhg.book_id, bhg.genre_id
     FROM books b JOIN book_has_genre bhg ON b.id = bhg.book_id
@@ -84,7 +84,7 @@ const getByBookBookName = (req, res) => {
     if (err) console.log(err);
     else res.json(rows);
   });
-}
+};
 
 /* ---- /quotes/bytags/:tags ---- */
 const getQuotesByTags = (req, res) => {
@@ -99,35 +99,38 @@ const getQuotesByTags = (req, res) => {
     if (err) console.log(err);
     else res.json(rows);
   });
+};
 
 
-  /* ---- /quotes/bygenre/:genre ---- */
-  const getQuotesByGenre = (req, res) => {
-    var inputGenre = req.params.genre;
-    const query = `
-    WITH 
-    findGenreId AS (
-    SELECT genre_id
-    FROM genres
-    WHERE genre_name like "%${inputGenre}%"
-    ),
-    bookids AS (
-    SELECT book_id AS id
-    FROM book_has_genre bhg JOIN findGenreId fgi ON bhg.genre_id = fgi.genre_id
-    ),
-    tempbooks AS (
-    SELECT title AS book
-    FROM books NATURAL JOIN bookids
-    )
-    SELECT DISTINCT content, author, book AS bookname
-    FROM quotes NATURAL JOIN tempbooks
-    ORDER BY num_like DESC
-    LIMIT 10
-    `;
-    connection.query(query, (err, rows, fields) => {
-      if (err) console.log(err);
-      else res.json(rows);
-    });
+/* ---- /quotes/bygenre/:genre ---- */
+const getQuotesByGenre = (req, res) => {
+  var inputGenre = req.params.genre;
+  const query = `
+  WITH
+  findGenreId AS (
+  SELECT genre_id
+  FROM genres
+  WHERE genre_name like "%${inputGenre}%"
+  ),
+  bookids AS (
+  SELECT book_id AS id
+  FROM book_has_genre bhg JOIN findGenreId fgi ON bhg.genre_id = fgi.genre_id
+  ),
+  tempbooks AS (
+  SELECT title AS book
+  FROM books NATURAL JOIN bookids
+  )
+  SELECT DISTINCT content, author, book AS bookname
+  FROM quotes NATURAL JOIN tempbooks
+  ORDER BY num_like DESC
+  LIMIT 10
+  `;
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  })
+};
+
 
 
 
@@ -258,15 +261,17 @@ const bestMoviesPerDecadeGenre = (req, res) => {
   });
 };
 
+
+//getTop20Keywords: getTop20Keywords,
+//getTopMoviesWithKeyword: getTopMoviesWithKeyword,
+//getRecs: getRecs,
+//getDecades: getDecades,
+//bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre,
+
 module.exports = {
-	//getTop20Keywords: getTop20Keywords,
-	//getTopMoviesWithKeyword: getTopMoviesWithKeyword,
-	//getRecs: getRecs,
-  //getDecades: getDecades,
-  //bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre,
-  getallGenres: getallGenres
-  getBookInfoOnId: getBookInfoOnId
-  getByBookBookName: getByBookBookName
-  getQuotesByTags: getQuotesByTags
+  getallGenres: getallGenres,
+  getBookInfoOnId: getBookInfoOnId,
+  getByBookBookName: getByBookBookName,
+  getQuotesByTags: getQuotesByTags,
   getQuotesByGenre: getQuotesByGenre
 };

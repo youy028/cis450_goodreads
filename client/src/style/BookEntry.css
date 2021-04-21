@@ -1,0 +1,11 @@
+.bookCard {
+  width: 12rem;
+  height: 20rem;
+}
+
+.bookImg {
+  height: auto;
+  max-height: 200px;
+  width: auto;
+  max-width: 12rem;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../style/BookEntry.css'
 import Card from 'react-bootstrap/Card'
 
 // <div class="p-3">
@@ -12,14 +13,17 @@ import Card from 'react-bootstrap/Card'
 // 		</div>
 // 	</div>
 // </div>
+
+//<Card style={{width: '12rem'}}>
 export default class BookEntry extends React.Component {
 	/* ---- Q2 (Recommendations) ---- */
 	render() {
 		return (
-			<Card style={{ width: '12rem'}}>
-			  <Card.Img variant="top" src={this.props.imgPath} />
+			<Card className="bookCard">
+			  <Card.Img className="bookImg" variant="top" src={this.props.imgPath}/>
 			  <Card.Body>
 			    <Card.Title>{this.props.name}</Card.Title>
+					<Card.Subtitle className="text-muted">{this.props.author}</Card.Subtitle>
 			  </Card.Body>
 			</Card>
 		);
