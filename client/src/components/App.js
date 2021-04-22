@@ -5,7 +5,6 @@ import {
 	Switch
 } from 'react-router-dom';
 import Recommendations from './Recommendations';
-import Search from './Search';
 import Explore from './Explore';
 import Quotes from './Quotes';
 
@@ -19,15 +18,11 @@ export default class App extends React.Component {
 						<Route
 							exact
 							path="/"
-							render={() => <Recommendations />}
+							render={() => <Explore />}
 						/>
 						<Route
 							path="/recommendations"
 							render={() => <Recommendations />}
-						/>
-						<Route
-							path="/search"
-							render={() => <Search />}
 						/>
 						<Route
 							path="/explore"
