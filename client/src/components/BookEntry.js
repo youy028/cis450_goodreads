@@ -21,7 +21,6 @@ export default class BookEntry extends React.Component {
 		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.getBookDetail = this.getBookDetail.bind(this);
 		this.renderBookDetail = this.renderBookDetail.bind(this);
-		this.convertRating = this.convertRating.bind(this);
 	};
 
 	handleOpenModal() {
@@ -30,20 +29,6 @@ export default class BookEntry extends React.Component {
 
 	handleCloseModal() {
 		this.setState({ showModal: false });
-	}
-
-	convertRating(i) {
-		if (i==1) return (<>&#11088;</>);
-		if (i==2) return (<>&#11088;&#11088;</>);
-		if (i==3) return (<>&#11088;&#11088;&#11088;</>);
-		if (i==4) return (<>&#11088;&#11088;&#11088;&#11088;</>);
-		if (i==5) return (<>&#11088;&#11088;&#11088;&#11088;&#11088;</>);
-		if (i==6) return (<>&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;</>);
-		if (i==7) return (<>&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;</>);
-		if (i==8) return (<>&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;</>);
-		if (i==9) return (<>&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;</>);
-		if (i==10) return (<>&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;&#11088;</>);
-		return (<></>);
 	}
 
 	getBookDetail() {
@@ -82,7 +67,7 @@ export default class BookEntry extends React.Component {
 							<h2><i>{this.props.name}</i></h2>
 							<hr style={{borderTop: '3px solid #c0c0c0', borderRadius: '1px'}}/>
 							<h5 className="text-muted">{this.props.author}</h5>
-							<p>{this.convertRating(parseInt(this.state.rating))}</p>
+							<p>{"⭐".repeat(parseInt(this.state.rating))}</p>
 							<p>{this.state.description}</p>
 						</div>
 					</div>
