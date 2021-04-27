@@ -19,6 +19,10 @@ app.get('/book/:id', routes.getBookInfoOnId);
 
 //explore
 app.get('/explore/twentymostpopular', routes.twentymostpopularbooks);
+app.get('/explore/randomquote', routes.getRandomQuote);
+app.get('/explore/top10authors', routes.getTenAuthors);
+app.get('/explore/mostprolific', routes.getProlific);
+app.get('/explore/raregems', routes.getGems);
 
 //recommendations
 app.get('/recommendations/bybook/:bookname', routes.getByBookBookName);

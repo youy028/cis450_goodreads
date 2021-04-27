@@ -1,21 +1,18 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default class MostPopularBooks extends React.Component {
+export default class RareGems extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			popularBooks: []
+			rareGems: []
 		};
-
-		// this.submitDecadeGenre = this.submitDecadeGenre.bind(this);
 	};
 
 
-
 	componentDidMount() {
-		fetch(`http://localhost:8081/explore/twentymostpopular`,
+		fetch(`http://localhost:8081/explore/raregems`,
 		{
 			method: 'GET'
 		}).then(res => {
@@ -24,15 +21,14 @@ export default class MostPopularBooks extends React.Component {
 			console.log(err);
 		}).then(books => {
 			if (!books) return;
-			const books2 = books.map((bookObj, i) => [bookObj.bookname]);
+			const books2 = books.map((bookObj, i) => [bookObj.bookname, bookObj.bookid]);
 			this.setState({
-				popularBooks: books2
+				rareGems: books2
 			});
 		}, err => {
 			console.log(err);
 		});
 	};
-
 
 	render() {
 		return (
@@ -40,8 +36,8 @@ export default class MostPopularBooks extends React.Component {
 				<div className="p-3">
 					<div className="jumbotron">
 						<div className="container-fluid">
-							<h1 className="display-5">Most Popular</h1>
-							{this.state.popularBooks.map((item, i)=>(<p>{i+1}. {item}</p>))}
+							<h1 className="display-5">Rare Gems</h1>
+							{this.state.rareGems.map((item, i)=>(<p>{i+1}. {item[0]}</p>))}
 						</div>
 					</div>
 				</div>

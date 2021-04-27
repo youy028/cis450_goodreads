@@ -65,7 +65,7 @@ const twentymostpopularbooks = (req, res) => {
       group by title
       order by ave_ratio
   )
-  select a.title, id
+  select a.title as bookname, id as bookid
   from ordered_by_popularity a left join books b on a.title = b.title
   order by a.ave_ratio
   limit 20
@@ -128,7 +128,7 @@ const getProlific = (req, res) => {
 /* ---- /explore/raregems ---- */
 const getGems = (req, res) => {
   const query = `
-  SELECT title FROM books
+  SELECT title as bookname, id as bookid FROM books
   WHERE rating_num > 1000 AND rating_num < 10000
   ORDER BY rating DESC LIMIT 10;
   `
@@ -139,7 +139,7 @@ const getGems = (req, res) => {
 };
 
 /* ---- /explore/quoteoftheday ---- */
-const getRandQuotes = (req, res) => {
+const getRandomQuote = (req, res) => {
   const query = `
   WITH temp AS (
     SELECT * FROM quotes WHERE num_like > 300
@@ -253,8 +253,6 @@ const getByCountry = (req, res) => {
 /* ---- /recommendations/bygenre/:genre ---- */
 const getByGenre = (req, res) => {
   var inputGenre = req.params.genre;
-  console.log("hiii");
-  console.log(inputGenre);
   const query = `
   with gen AS (
     SELECT book_id FROM book_has_genre
@@ -338,7 +336,7 @@ module.exports = {
   getTenAuthors: getTenAuthors,
   getProlific: getProlific,
   getGems: getGems,
-  getRandQuotes: getRandQuotes,
+  getRandomQuote: getRandomQuote,
 
   getByBookBookName: getByBookBookName,
   getByCountry: getByCountry,

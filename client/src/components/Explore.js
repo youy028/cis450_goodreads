@@ -1,5 +1,9 @@
 import React from 'react';
 import MostPopularBooks from './Explore_components/MostPopularBooks';
+import RandomQuote from './Explore_components/RandomQuote';
+import TopAuthors from './Explore_components/TopAuthors';
+import RareGems from './Explore_components/RareGems';
+import MostProlificAuthors from './Explore_components/MostProlificAuthors';
 import PageNavbar from './PageNavbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -34,9 +38,12 @@ export default class Explore extends React.Component {
 					<div className="row align-items-start">
 						<div className="col">
 							<MostPopularBooks/>
+							<TopAuthors/>
 						</div>
 						<div className="col">
-							<MostPopularBooks/>
+							<RandomQuote/>
+							<RareGems/>
+							<MostProlificAuthors/>
 						</div>
 					</div>
 				</div>
