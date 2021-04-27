@@ -42,6 +42,9 @@ export default class RandomQuote extends React.Component {
 						<div className="container-fluid">
 							<h1 className="display-5">quote</h1>
 							{this.state.content}
+							<p style={{textAlign: 'right'}}>
+								{this.state.author}, <i>{this.state.bookname}</i>
+							</p>
 						</div>
 					</div>
 				</div>
