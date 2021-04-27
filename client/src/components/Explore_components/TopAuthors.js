@@ -36,7 +36,7 @@ export default class TopAuthors extends React.Component {
 				<div className="p-3">
 					<div className="jumbotron">
 						<div className="container-fluid">
-							<h1 className="display-5">Top Authors</h1>
+							<h2 className="display-5">Top Authors</h2>
 							{this.state.topAuthors.map((item, i)=>(<p>{i+1}. {item}</p>))}
 						</div>
 					</div>

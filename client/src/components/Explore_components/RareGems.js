@@ -36,7 +36,7 @@ export default class RareGems extends React.Component {
 				<div className="p-3">
 					<div className="jumbotron">
 						<div className="container-fluid">
-							<h1 className="display-5">Rare Gems</h1>
+							<h2 className="display-5">Rare Gems</h2>
 							{this.state.rareGems.map((item, i)=>(<p>{i+1}. {item[0]}</p>))}
 						</div>
 					</div>

@@ -15,7 +15,7 @@ export default class MostPopularBooks extends React.Component {
 
 
 	componentDidMount() {
-		fetch(`http://localhost:8081/explore/twentymostpopular`,
+		fetch(`http://localhost:8081/explore/mostpopularbooks`,
 		{
 			method: 'GET'
 		}).then(res => {
@@ -40,7 +40,7 @@ export default class MostPopularBooks extends React.Component {
 				<div className="p-3">
 					<div className="jumbotron">
 						<div className="container-fluid">
-							<h1 className="display-5">Most Popular</h1>
+							<h2 className="display-5">Most Popular</h2>
 							{this.state.popularBooks.map((item, i)=>(<p>{i+1}. {item}</p>))}
 						</div>
 					</div>

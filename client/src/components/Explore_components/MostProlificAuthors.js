@@ -36,7 +36,7 @@ export default class MostProlificAuthors extends React.Component {
 				<div className="p-3">
 					<div className="jumbotron">
 						<div className="container-fluid">
-							<h1 className="display-5">Most Prolific Authors</h1>
+							<h2 className="display-5">Most Prolific Authors</h2>
 							{this.state.prolificAuthors.map((item, i)=>(<p>{i+1}. {item}</p>))}
 						</div>
 					</div>

@@ -49,8 +49,8 @@ const getBookInfoOnId = (req, res) => {
   });
 };
 
-/* ---- /explore/twentymostpopularbooks ---- */
-const twentymostpopularbooks = (req, res) => {
+/* ---- /explore/mostpopularbooks ---- */
+const mostpopularbooks = (req, res) => {
   const query = `
   with popular as
   (
@@ -68,7 +68,7 @@ const twentymostpopularbooks = (req, res) => {
   select a.title as bookname, id as bookid
   from ordered_by_popularity a left join books b on a.title = b.title
   order by a.ave_ratio
-  limit 20
+  limit 10
 
   `
   connection.query(query, (err, rows, fields) => {
@@ -117,7 +117,7 @@ const getProlific = (req, res) => {
     SELECT author_name, AVG(page_num) as avg
     FROM temp2 GROUP BY author_id
   ) SELECT author_name AS author FROM temp3
-    ORDER BY avg DESC LIMIT 20;
+    ORDER BY avg DESC LIMIT 10;
   `
   connection.query(query, (err, rows, fields) => {
     if (err) console.log(err);
@@ -332,7 +332,7 @@ module.exports = {
   getallGenres: getallGenres,
   getBookInfoOnId: getBookInfoOnId,
 
-  twentymostpopularbooks: twentymostpopularbooks,
+  mostpopularbooks: mostpopularbooks,
   getTenAuthors: getTenAuthors,
   getProlific: getProlific,
   getGems: getGems,

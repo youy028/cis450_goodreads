@@ -40,7 +40,7 @@ export default class RandomQuote extends React.Component {
 				<div className="p-3">
 					<div className="jumbotron">
 						<div className="container-fluid">
-							<h1 className="display-5">quote</h1>
+							<h2 className="display-5">Quote</h2>
 							{this.state.content}
 							<p style={{textAlign: 'right'}}>
 								{this.state.author}, <i>{this.state.bookname}</i>
