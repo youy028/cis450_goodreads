@@ -35,6 +35,7 @@ export default class Explore extends React.Component {
 			<div className="Explore">
 				<PageNavbar active="explore" />
 				<div className="container">
+					<br/>
 					<div className="row align-items-start">
 						<div className="col">
 							<MostPopularBooks/>
