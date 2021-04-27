@@ -18,13 +18,16 @@ app.get('/getallGenres', routes.getallGenres);
 app.get('/book/:id', routes.getBookInfoOnId);
 
 //explore
-
+app.get('/explore/twentymostpopular', routes.twentymostpopularbooks);
 
 //recommendations
 app.get('/recommendations/bybook/:bookname', routes.getByBookBookName);
-
+app.get('/recommendations/byauthor/:authorname', routes.getByAuthor);
+app.get('/recommendations/bycountry/:country', routes.getByCountry);
+app.get('/recommendations/bygenre/:genre', routes.getByGenre);
 
 //search
+
 
 
 //quotes

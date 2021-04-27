@@ -54,7 +54,6 @@ export default class BookEntry extends React.Component {
 	}
 
 	renderBookDetail() {
-
 		if (this.state.rating=="") {this.getBookDetail()}
 		return (
 			<div>
@@ -76,7 +75,6 @@ export default class BookEntry extends React.Component {
 		);
 	}
 
-
 	render() {
 		return (
 			<div className="BookEntry">
@@ -84,8 +82,7 @@ export default class BookEntry extends React.Component {
 							 onHide={this.handleCloseModal}
 							 centered={true}
 							 size="lg">
-					<Modal.Header closeButton={true}>
-					</Modal.Header>
+					<Modal.Header closeButton={true}/>
 					<Modal.Body>{this.renderBookDetail()}</Modal.Body>
 				</Modal>
 				<Card className="bookCard" onClick={this.handleOpenModal}>

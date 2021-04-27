@@ -49,12 +49,115 @@ const getBookInfoOnId = (req, res) => {
   });
 };
 
+/* ---- /explore/twentymostpopularbooks ---- */
+const twentymostpopularbooks = (req, res) => {
+  const query = `
+  with popular as
+  (
+      select *, review_num/rating_num as ratio
+      from books
+      where rating >= 3.5
+  ),
+  ordered_by_popularity as
+  (
+      select title, avg(ratio) as ave_ratio
+      from popular
+      group by title
+      order by ave_ratio
+  )
+  select a.title, id
+  from ordered_by_popularity a left join books b on a.title = b.title
+  order by a.ave_ratio
+  limit 20
+
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+/* ---- /explore/top10authors ---- */
+const getTenAuthors = (req, res) => {
+  const query = `
+  with temp AS (
+    SELECT authors.author_id, author_name, ave_rating, book_id
+    FROM authors
+    JOIN book_author ON authors.author_id = book_author.author_id
+  ), temp2 AS (
+    SELECT author_id, author_name, ave_rating, id, rating
+    FROM temp
+    JOIN books ON books.id = temp.book_id
+    WHERE books.rating_num > 10000 AND author_id != 404
+  ), temp3 AS (
+    SELECT author_name, MAX(rating) as max_rating
+    FROM temp2 GROUP BY author_id
+  ) SELECT author_name AS author FROM temp3
+    ORDER BY max_rating DESC LIMIT 10;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+/* ---- /explore/mostprolific ---- */
+const getProlific = (req, res) => {
+  const query = `
+  with temp AS (
+    SELECT authors.author_id, author_name, ave_rating, book_id
+    FROM authors
+    JOIN book_author ON authors.author_id = book_author.author_id
+  ), temp2 AS (
+    SELECT author_id, author_name, ave_rating, page_num
+    FROM temp
+    JOIN books ON books.id = temp.book_id
+    WHERE ave_rating > 1 AND author_id != 404
+  ), temp3 AS (
+    SELECT author_name, AVG(page_num) as avg
+    FROM temp2 GROUP BY author_id
+  ) SELECT author_name AS author FROM temp3
+    ORDER BY avg DESC LIMIT 20;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+/* ---- /explore/raregems ---- */
+const getGems = (req, res) => {
+  const query = `
+  SELECT title FROM books
+  WHERE rating_num > 1000 AND rating_num < 10000
+  ORDER BY rating DESC LIMIT 10;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+/* ---- /explore/quoteoftheday ---- */
+const getRandQuotes = (req, res) => {
+  const query = `
+  WITH temp AS (
+    SELECT * FROM quotes WHERE num_like > 300
+  ) SELECT content, author, book AS bookname FROM temp ORDER BY RAND() LIMIT 1;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+
 
 /* ---- /recommendations/bybook/:bookname ---- */
 const getByBookBookName = (req, res) => {
   var inputBookName = req.params.bookname;
   const query = `
-  WITH 
+  WITH
   getBookID AS (
     SELECT bhg.book_id, bhg.genre_id, b.title
     FROM books b JOIN book_has_genre bhg ON b.id = bhg.book_id
@@ -85,6 +188,99 @@ const getByBookBookName = (req, res) => {
     else res.json(rows);
   });
 };
+
+
+/* ---- /recommendations/byauthor/:authorname ---- */
+const getByAuthor = (req, res) => {
+  var inputAuthor = req.params.authorname;
+  const query = `
+  WITH
+  getAuthorId AS (
+    SELECT author_id, author_name
+    FROM authors
+    WHERE author_name = "${inputAuthor}"
+  ), getBookID AS (
+    SELECT book_id, author_name FROM book_author
+    JOIN getAuthorId ON book_author.author_id = getAuthorId.author_id
+  ) SELECT getBookID.book_id AS bookid, image_url AS coverUrl,
+  author_name AS author, title AS bookname FROM getBookID
+  JOIN books ON books.id = book_id
+  GROUP BY bookname
+  ORDER BY rating_num DESC LIMIT 20;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+
+
+/* ---- /recommendations/bycountry/:country ---- */
+const getByCountry = (req, res) => {
+  var inputCountry = req.params.country;
+  const query = `
+  with authors_with_country as
+  (
+      select a.book_id, a.author_id, b.birthplace, b.author_name
+      from book_author a join authors b on a.author_id = b.author_id
+  ),
+  that_country as
+  (
+      select books.image_url, a.author_name, books.title, books.id, books.rating * books.rating_num as popularity
+      from books join authors_with_country a on books.id = a.book_id
+      where a.birthplace like '%${inputCountry}%'
+  ),
+  titles as
+  (
+  select distinct title, avg(popularity) as avp
+  from that_country
+  group by title
+  order by avp desc
+  limit 30
+  )
+  select distinct b.id as bookid, b.image_url as coverUrl, b.title as bookname, b.author_name as author
+  from titles a left join that_country b on a.title = b.title
+
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+
+/* ---- /recommendations/bygenre/:genre ---- */
+const getByGenre = (req, res) => {
+  var inputGenre = req.params.genre;
+  console.log("hiii");
+  console.log(inputGenre);
+  const query = `
+  with gen AS (
+    SELECT book_id FROM book_has_genre
+    JOIN genres ON book_has_genre.genre_id = genres.genre_id
+    WHERE genre_name LIKE '%${inputGenre}%'
+  ), temp AS (
+    SELECT * FROM books
+    JOIN gen ON books.id = gen.book_id
+  ), getAuthorId AS (
+    SELECT rating, temp.book_id AS bookid, image_url AS coverUrl,
+    title AS bookname, author_id FROM temp
+    JOIN book_author ON temp.book_id = book_author.book_id
+  ) SELECT bookid, coverUrl, bookname, GROUP_CONCAT(a.author_name) AS author
+  FROM getAuthorId ga
+  JOIN authors a ON ga.author_id = a.author_id
+  GROUP BY ga.bookname
+  ORDER BY rating DESC LIMIT 20;
+  `
+  connection.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+
+
 
 /* ---- /quotes/bytags/:tags ---- */
 const getQuotesByTags = (req, res) => {
@@ -134,144 +330,21 @@ const getQuotesByGenre = (req, res) => {
 
 
 
-/* ---- Q1a (Dashboard) ---- */
-// Equivalent to: function getTop20Keywords(req, res) {}
-const getTop20Keywords = (req, res) => {
-  const query = `
-    SELECT kwd_name
-    FROM movie_keyword
-    GROUP BY kwd_name
-    ORDER BY count(*) DESC
-    LIMIT 20;
-  `;
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-/* ---- Q1b (Dashboard) ---- */
-const getTopMoviesWithKeyword = (req, res) => {
-  var keyword = req.params.keyword;
-  const query = `
-    WITH t1 as (
-    SELECT movie_id
-    FROM movie_keyword
-    WHERE kwd_name = "${keyword}")
-    SELECT title, rating, num_ratings FROM t1 NATURAL JOIN movie
-    ORDER BY rating DESC, num_ratings DESC LIMIT 10;
-  `;
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-/* ---- Q2 (Recommendations) ---- */
-const getRecs = (req, res) => {
-  var title = req.params.title;
-  const query = `
-  WITH
-  target_movie as (
-  	SELECT movie_id
-  	FROM movie
-  	WHERE title = "${title}"
-  	LIMIT 1),
-  target_cast as (
-  	SELECT movie_id, cast_id
-  	FROM cast_in
-  	NATURAL JOIN target_movie),
-  cast_is_match as (
-  	SELECT *
-  	FROM cast_in ci
-  	WHERE ci.cast_id in (select cast_id from target_cast)),
-  similar_stat as (
-  	SELECT movie_id, count(*) AS similarity
-  	FROM cast_is_match
-  	GROUP BY movie_id)
-  SELECT title, movie_id, rating, num_ratings, similarity
-  FROM movie NATURAL JOIN similar_stat
-  ORDER BY similarity DESC, rating DESC, num_ratings DESC LIMIT 1, 10;
-  `;
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-/* ---- Q3a (Best Movies) ---- */
-const getDecades = (req, res) => {
-  const query = `
-    WITH
-    t1 AS (
-    	SELECT FLOOR(release_year/10)*10 AS decade
-    	FROM movie
-    	GROUP BY release_year
-    	ORDER BY release_year ASC)
-    SELECT DISTINCT decade FROM t1;
-  `;
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-/* ---- (Best Movies) ---- */
-const getGenres = (req, res) => {
-  const query = `
-    SELECT name
-    FROM genre
-    WHERE name <> 'genres'
-    ORDER BY name ASC;
-  `;
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-/* ---- Q3b (Best Movies) ---- */
-const bestMoviesPerDecadeGenre = (req, res) => {
-  var decade = req.params.decade;
-  var genre = req.params.genre;
-  const query = `
-    With
-    t1 as (SELECT * from movie natural join movie_genre),
-    t2 as (SELECT * from t1 where ${decade} <= release_year and release_year < (${decade}+10)),
-    t3 as (SELECT * from t2 where genre_name = "${genre}"),
-    t4 as (select movie_id, title, rating, movie_genre.genre_name as genre_name, t3.genre_name as requested_genre from t3 join movie_genre using (movie_id)),
-    t5 as (select distinct genre_name from t4),
-    t6 as (select genre_name, avg(rating) as genre_avg_rating from t2 natural join t5 group by genre_name),
-    t7 as (SELECT * from t4 natural join t6),
-    t8 as (select * from t7 where rating <= genre_avg_rating)
-    select movie_id, title, rating from t3 where t3.movie_id not in (select movie_id from t8) order by title limit 100
-  `;
-
-  connection.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-};
-
-
-//getTop20Keywords: getTop20Keywords,
-//getTopMoviesWithKeyword: getTopMoviesWithKeyword,
-//getRecs: getRecs,
-//getDecades: getDecades,
-//bestMoviesPerDecadeGenre: bestMoviesPerDecadeGenre,
-
 module.exports = {
   getallGenres: getallGenres,
   getBookInfoOnId: getBookInfoOnId,
+
+  twentymostpopularbooks: twentymostpopularbooks,
+  getTenAuthors: getTenAuthors,
+  getProlific: getProlific,
+  getGems: getGems,
+  getRandQuotes: getRandQuotes,
+
   getByBookBookName: getByBookBookName,
+  getByCountry: getByCountry,
+  getByGenre: getByGenre,
+  getByAuthor: getByAuthor,
+
   getQuotesByTags: getQuotesByTags,
   getQuotesByGenre: getQuotesByGenre
 };

@@ -19,7 +19,7 @@ export default class Recommendations extends React.Component {
 			bookQueryStr: "",
 			authorQueryStr: "",
 			countryQueryStr: "",
-			genreQueryStr: "",
+			// genreQueryStr: "",
 			bookQueryRes: [],
 			authorQueryRes: [],
 			countryQueryRes: [],
@@ -51,7 +51,27 @@ export default class Recommendations extends React.Component {
 	}
 
 	handleGenreChange(genre) {
-		this.setState({genreQueryStr: genre});
+		console.log(genre);
+		// console.log(this.state.genreQueryStr);
+		fetch(`http://localhost:8081/recommendations/bygenre/${genre}`,
+		{
+			method: 'GET'
+		}).then(res => {
+			return res.json();
+		}, err => {
+			console.log(err);
+		}).then(books => {
+			if (!books) return;
+			const books2 = books.map((bookObj, i) => [bookObj.coverUrl, bookObj.bookname, bookObj.author, bookObj.bookid]);
+			this.setState({
+				genreQueryRes: books2
+			});
+		}, err => {
+			console.log(err);
+		});
+
+		// this.setState({genreQueryStr: genre});
+		// this.submitSearchByGenre();
 	}
 
 	getActiveQueryRes() {

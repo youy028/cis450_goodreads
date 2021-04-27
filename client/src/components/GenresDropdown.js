@@ -17,6 +17,7 @@ export default class GenresDropdown extends React.Component {
 
 	handleSelect(eventKey, event) {
 		this.setState({selected: eventKey});
+
 		this.props.handleChange(eventKey);
 	}
 
