@@ -81,18 +81,19 @@ const mostpopularbooks = (req, res) => {
 const getTenAuthors = (req, res) => {
   const query = `
   with temp AS (
-      SELECT authors.author_id, author_name, book_id
-      FROM authors
-      JOIN book_author ON authors.author_id = book_author.author_id
-      WHERE book_author.author_id != 404
-    ), temp2 AS (
-      SELECT author_name, rating
-      FROM temp
-      JOIN books ON books.id = temp.book_id
-      WHERE books.rating_num > 10000
-    ) SELECT author_name
-      FROM temp2 GROUP BY author_name
-      ORDER BY MAX(rating) DESC LIMIT 10;
+    SELECT authors.author_id, author_name, ave_rating, book_id
+    FROM authors
+    JOIN book_author ON authors.author_id = book_author.author_id
+  ), temp2 AS (
+    SELECT author_id, author_name, ave_rating, id, rating
+    FROM temp
+    JOIN books ON books.id = temp.book_id
+    WHERE books.rating_num > 10000 AND author_id != 404
+  ), temp3 AS (
+    SELECT author_name, MAX(rating) as max_rating
+    FROM temp2 GROUP BY author_id
+  ) SELECT author_name AS author FROM temp3
+    ORDER BY max_rating DESC LIMIT 10;
   `
   connection.query(query, (err, rows, fields) => {
     if (err) console.log(err);
