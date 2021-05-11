@@ -6,6 +6,20 @@
 
 All dependency information can be found in client/package.json and server/package.json
 
+
+
+### Data cleaning code
+
+The data cleaning code is stored in (Final)_Data_Cleaning_books,_genres,_authors,_quotes.ipynb
+
+
+
+### Project code
+
+The project code is stored in the client folder and server folder.
+
+
+
 ### Setting Up the project
 
 1. Check if you already have Node installed.Open terminal and type node -v; npm -v to check what version, if any, of node and npm are installed on your machine. If these commands are not recognized, go to https://nodejs.org/en/download/ and download the Node.js for your system. Having multiple versions sometimes causes issues that are hard to debug.
